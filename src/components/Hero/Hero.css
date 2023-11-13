@@ -1,0 +1,4 @@
+.hero{
+    min-height: 70vh;
+    background: linear-gradient(rgb(0 0 0 / 30%), rgb(0 0 0 / 60%)), url(./img/hero-home.jpg) center / cover;
+}
