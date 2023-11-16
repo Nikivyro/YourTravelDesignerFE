@@ -11,21 +11,22 @@ export default function SingleExperience({ data }) {
     <Card ref={colRef}>
       <Card.Img variant="top" src={data.cover} />
       <Card.Body>
-        <Card.Title>{data.name}</Card.Title>
+        <Card.Title className='fw-bold'>{data.name}</Card.Title>
         <Card.Text>
-          <p>Type: {data.type}</p>
-          <p>Category: {data.category}</p>
-        </Card.Text>
-        <Card.Text>
-          {data.description}
+          <ul className='list-unstyled'>
+            <li>
+              <span>{data.type} - {data.category}</span>
+            </li>
+            <li>
+              <span><i className="bi bi-geo-alt me-1"></i>{data.location.city.name}</span>
+            </li>
+            <li>
+              <span className='fw-bold'>{data.tourDetails.duration}</span>
+            </li>
+          </ul>
+          {/* <p>{data.description}</p> */}
           <hr></hr>
-          € {data.price}
-        </Card.Text>
-        <Card.Text>
-          <p>City: {data.location.city.name}</p>
-          <p>Duration: {data.tourDetails.duration}</p>
-          <p>Languages: {data.tourDetails.languages}</p>
-          <p>People: {data.tourDetails.people}</p>
+          <span>€ {data.price} / a persona</span>
         </Card.Text>
         <Link to={`/experiences/${data._id}`} className='text-white text-decoration-none'>
           <Button variant="warning">Scopri di più<i className="bi bi-arrow-right ms-1"></i></Button>

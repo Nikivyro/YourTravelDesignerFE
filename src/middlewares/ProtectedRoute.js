@@ -10,12 +10,8 @@ function ProtectedRoute({ component: Component, ...rest }) {
   const navigate = useNavigate();
   
 
-  console.log('Auth dentro protected',authState);
-  console.log('user dentro protected',user);
-  // controllo del token nel localStorage
-  // Se inizialize rimanda a userPage
-  // Se loggato rimanda a userPage
-  // Se non loggato rimanda a login
+  //console.log('Auth dentro protected',authState);
+  //console.log('user dentro protected',user);
 
   if (user) {
       return <Outlet />;

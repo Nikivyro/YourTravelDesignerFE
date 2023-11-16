@@ -18,8 +18,6 @@ export default function ExperienceDetail() {
         dispatch(fetchExperienceById(experienceId));
     }, [dispatch, experienceId]);
 
-console.log(experience);
-
     return (
         <Layout>
             <Container>
@@ -107,7 +105,7 @@ console.log(experience);
                 </Row>
             </Container>
             <Container>
-                {/* <ExperiencesByCategory experienceId={experienceId} categoryName={experience.category}/> */}
+                <ExperiencesByCategory experienceId={experienceId} categoryName={experience.category}/>
             {status === 'loading' && (
                 <>
                     <Spinner animation="grow" />

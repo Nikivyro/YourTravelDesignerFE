@@ -269,7 +269,7 @@ const CreateExperience = ({ cities }) => {
         try {
           await dispatch(createExperience(formData));
         } catch (error) {
-          // Gestione errori
+            console.error('Errore nella creazione', error)
         }
     };
 
@@ -280,7 +280,7 @@ const CreateExperience = ({ cities }) => {
             <Form.Control type="text" name="name" value={formData.name} onChange={handleInputChange}  required/>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formBasicType">
-            <Form.Label className='fw-bold mb-2'>Paese</Form.Label>
+            <Form.Label className='fw-bold mb-2'>Tipologia</Form.Label>
             <Form.Control as="select" name="type" value={formData.type} onChange={handleInputChange} required>
                 <option value="" disabled>Seleziona tipologia</option>
                 <option value="Tour">Tour</option>

@@ -12,12 +12,18 @@ const EditExperienceForm = ({ experienceData, cities, onSave }) => {
     setFormData(experienceData);
   }, [experienceData]);
 
-  const handleInputChange = (e) => {
+const handleInputChange = (e) => {
     const { name, value } = e.target;
     const updatedValue = name === 'price' ? parseInt(value) : value;
+
+    // Se il campo è 'supplier', estrai solo l'_id
+    const updatedSupplierValue = name === 'supplier' && typeof updatedValue === 'object' && updatedValue !== null
+        ? updatedValue._id
+        : updatedValue;
+
     setFormData({
         ...formData,
-        [name]: updatedValue
+        [name]: updatedSupplierValue
     });
 };
 
@@ -45,29 +51,33 @@ const handleLocationChange = (e) => {
 // };
 const handleCoverChange = (e) => {
     const file = e.target.files[0];
-  
-    setFormData({
-      ...formData,
-      cover: file,
-    });
-  
-    if (file) {
-      dispatch(uploadCover(file))
-        .then((coverURL) => {
-          // Aggiorna lo stato con l'URL della copertina
-          setFormData((prevData) => ({
-            ...prevData,
-            cover: coverURL,
-          }));
-        })
-        .catch((error) => {
-          // Gestisci eventuali errori nell'upload della copertina
-          console.error('Errore durante l\'upload della copertina:', error);
-        });
-    }
-  };
 
-  const handleItineraryChange = (e, dayIndex, stopIndex, locationKey) => {
+    setFormData({
+        ...formData,
+        cover: file,
+    });
+
+    if (file) {
+        dispatch(uploadCover(file))
+            .then((action) => {
+                const coverURL = action.payload;
+                console.log('URL dell\'immagine:', coverURL);
+
+                // Aggiorna lo stato con l'URL della copertina
+                setFormData((prevData) => ({
+                    ...prevData,
+                    cover: coverURL,
+                }));
+            })
+            .catch((error) => {
+                // Gestisci eventuali errori nell'upload della copertina
+                console.error('Errore durante l\'upload della copertina:', error);
+            });
+    }
+};
+
+
+const handleItineraryChange = (e, dayIndex, stopIndex, locationKey) => {
     const { name, value } = e.target;
     const updatedStops = [...formData.itineraryStops];
   
@@ -86,29 +96,49 @@ const handleCoverChange = (e) => {
       ...formData,
       itineraryStops: updatedStops
     });
-  };
+};
+
 const handleAddStop = (dayIndex) => {
-    const updatedItinerary = [...formData.itineraryStops];
-  
-    // Verifica se l'array stops esiste
-    if (updatedItinerary[dayIndex] && updatedItinerary[dayIndex].stops) {
-      updatedItinerary[dayIndex].stops.push({
-        name: '',
-        description: '',
-        location: {
-          latitude: '',
-          longitude: ''
+    setFormData((prevData) => {
+        const updatedItinerary = [...prevData.itineraryStops];
+
+        if (updatedItinerary[dayIndex] && updatedItinerary[dayIndex].stops) {
+            updatedItinerary[dayIndex] = {
+                ...updatedItinerary[dayIndex],
+                stops: [
+                    ...updatedItinerary[dayIndex].stops,
+                    {
+                        name: '',
+                        description: '',
+                        location: {
+                            latitude: '',
+                            longitude: ''
+                        }
+                    }
+                ]
+            };
+        } else {
+            updatedItinerary[dayIndex] = {
+                stops: [
+                    {
+                        name: '',
+                        description: '',
+                        location: {
+                            latitude: '',
+                            longitude: ''
+                        }
+                    }
+                ]
+            };
         }
-      });
-    } else {
-      updatedItinerary[dayIndex] = { stops: [{ name: '', description: '', location: { latitude: '', longitude: '' } }] };
-    }
-  
-    setFormData({
-      ...formData,
-      itineraryStops: updatedItinerary
+
+        return {
+            ...prevData,
+            itineraryStops: updatedItinerary
+        };
     });
-  };
+};
+
 
 const handleRemoveStop = (dayIndex, stopIndex) => {
     const updatedItinerary = [...formData.itineraryStops];
@@ -184,9 +214,15 @@ const handleTourDetailChange = (e, field, index) => {
     const updatedServices = [...formData.tourDetails.services];
 
     if (type === 'checkbox') {
-        updatedServices[index].included = checked;
+        updatedServices[index] = {
+            ...updatedServices[index],
+            included: checked,
+        };
     } else {
-        updatedServices[index].service = value;
+        updatedServices[index] = {
+            ...updatedServices[index],
+            service: value,
+        };
     }
 
     setFormData({
@@ -197,6 +233,7 @@ const handleTourDetailChange = (e, field, index) => {
         },
     });
 };
+
 
 const handleMeetingPointChange = (e, index) => {
     const { name, value } = e.target;
@@ -261,8 +298,6 @@ const handleTourDetailsChange = (e) => {
     }
   };
 
-  console.log(formData)
-
   return (
     <form onSubmit={handleSubmit}>
     <label>
@@ -303,7 +338,7 @@ const handleTourDetailsChange = (e) => {
 
     <label>
         Location:
-        <select name="location" value={formData.location.city} onChange={handleLocationChange}>
+        <select name="location" value={formData.location.city._id} onChange={handleLocationChange}>
             <option value="">Select Location</option>
             {cities.map(city => (
                 <option key={city._id} value={city._id}>
@@ -471,17 +506,17 @@ const handleTourDetailsChange = (e) => {
     </label>
 
     <label>
-        Supplier:
-        <input
-            type="text"
-            name="supplier"
-            value={formData.supplier}
-            onChange={handleInputChange}
-        />
+    Supplier:
+    <input
+        type="text"
+        name="supplier"
+        value={typeof formData.supplier === 'object' ? formData.supplier._id : formData.supplier}
+        onChange={handleInputChange}
+    />
     </label>
 
     <input type="file" onChange={handleCoverChange} />
-    {formData.cover && <img src={formData.cover} alt="Cover Preview" />}
+    {formData.cover && <img src={formData.cover} alt="Cover Preview" className='img-fluid' width={200}/>}
 
     <button type="submit">Salva modifiche</button>
 </form>

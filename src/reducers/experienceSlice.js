@@ -38,12 +38,6 @@ export const createExperience = createAsyncThunk('experiences/createExperience',
 
 export const updateExperience = createAsyncThunk('experiences/updateExperience', async ({ experienceId, dataToUpdate }) => {
   try {
-    // Esegue l'upload della copertina se è presente nel dataToUpdate
-    if (dataToUpdate.cover) {
-      const coverURL = await uploadCover(dataToUpdate.cover);
-      dataToUpdate.cover = coverURL;
-    }
-
     const response = await axios.patch(
       `${process.env.REACT_APP_URL_ENDPOINT}/experiences/edit/${experienceId}`,
       dataToUpdate,
@@ -75,8 +69,7 @@ export const uploadCover = createAsyncThunk('experiences/uploadCover', async (fi
     formData.append('cover', file);
 
     const response = await axios.post(`${process.env.REACT_APP_URL_ENDPOINT}/experiences/cloudUpload`, formData);
-
-    return response.data.coverURL; // Ritorna l'URL dell'immagine caricata
+    return response.data.cover;
   } catch (error) {
     throw error;
   }

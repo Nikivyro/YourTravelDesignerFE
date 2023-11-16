@@ -15,6 +15,8 @@ export default function ExperiencesByCategory({experienceId, categoryName}) {
       fetchData();
     }, [dispatch, experienceId]);
 
+  console.log(categoryExperiences);
+
     return (
     <div>
       <h2>Esperienze per categoria</h2>
