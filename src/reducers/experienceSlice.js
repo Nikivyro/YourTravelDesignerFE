@@ -38,21 +38,15 @@ export const createExperience = createAsyncThunk('experiences/createExperience',
 
 export const updateExperience = createAsyncThunk('experiences/updateExperience', async ({ experienceId, dataToUpdate }) => {
   try {
-    const formData = new FormData();
-
-    Object.entries(dataToUpdate).forEach(([key, value]) => {
-      if (key === 'gallery') {
-        value.forEach((image, index) => {
-          formData.append(`gallery[${index}]`, image);
-        });
-      } else {
-        formData.append(key, value);
-      }
-    });
+    // Esegue l'upload della copertina se è presente nel dataToUpdate
+    if (dataToUpdate.cover) {
+      const coverURL = await uploadCover(dataToUpdate.cover);
+      dataToUpdate.cover = coverURL;
+    }
 
     const response = await axios.patch(
       `${process.env.REACT_APP_URL_ENDPOINT}/experiences/edit/${experienceId}`,
-      formData,
+      dataToUpdate,
       {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -75,13 +69,32 @@ export const deleteExperience = createAsyncThunk('experiences/deleteExperience',
   }
 });
 
-export const uploadCover = createAsyncThunk('experiences/uploadCover', async (imageFile) => {
+export const uploadCover = createAsyncThunk('experiences/uploadCover', async (file) => {
   try {
-    const imageFormData = new FormData();
-    imageFormData.append('cover', imageFile);
+    const formData = new FormData();
+    formData.append('cover', file);
 
-    const response = await axios.post(`${process.env.REACT_APP_URL_ENDPOINT}/experiences/cloudUpload`, imageFormData);
-    return response.data.cover;
+    const response = await axios.post(`${process.env.REACT_APP_URL_ENDPOINT}/experiences/cloudUpload`, formData);
+
+    return response.data.coverURL; // Ritorna l'URL dell'immagine caricata
+  } catch (error) {
+    throw error;
+  }
+});
+
+export const fetchExperienceById = createAsyncThunk('experiences/fetchExperienceById', async (experienceId) => {
+  try {
+    const response = await axios.get(`${process.env.REACT_APP_URL_ENDPOINT}/experiences/${experienceId}`);
+    return response.data.experience;
+  } catch (error) {
+    throw error;
+  }
+});
+
+export const fetchExperiencesByType = createAsyncThunk('experiences/fetchExperiencesByType', async (type) => {
+  try {
+    const response = await axios.get(`${process.env.REACT_APP_URL_ENDPOINT}/experiences/type/${type}`);
+    return response.data.experiences;
   } catch (error) {
     throw error;
   }
@@ -105,6 +118,25 @@ export const fetchExperiencesByCity = createAsyncThunk('experiences/fetchExperie
   }
 });
 
+export const fetchExperiencesByLocation = createAsyncThunk('experiences/fetchExperiencesByLocation', async (cityName) => {
+  try {
+    const response = await axios.get(`${process.env.REACT_APP_URL_ENDPOINT}/experiences/city/${cityName}`);
+    return response.data.experiences;
+  } catch (error) {
+    throw error;
+  }
+});
+
+export const fetchRelatedExperienceById = createAsyncThunk('experiences/fetchRelatedExperienceById', async ({ cityName, experienceId }) => {
+  try {
+    const response = await axios.get(`${process.env.REACT_APP_URL_ENDPOINT}/experiences/city/${cityName}/related/${experienceId}`);
+    return response.data.experiences;
+  } catch (error) {
+    throw error;
+  }
+});
+
+
 
 const experienceSlice = createSlice({
   name: 'experiences',
@@ -126,11 +158,19 @@ const experienceSlice = createSlice({
       .addCase(createExperience.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
+      .addCase(updateExperience.pending, (state) => {
+        state.status = 'loading';
+      })
       .addCase(updateExperience.fulfilled, (state, action) => {
         const index = state.data.findIndex((experience) => experience._id === action.payload._id);
         if (index !== -1) {
           state.data[index] = action.payload;
         }
+        state.status = 'succeeded';
+      })
+      .addCase(updateExperience.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
       })
       .addCase(deleteExperience.fulfilled, (state, action) => {
         state.data = state.data.filter((experience) => experience._id !== action.payload);
@@ -157,6 +197,17 @@ const experienceSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
+      .addCase(fetchExperiencesByType.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchExperiencesByType.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.data = action.payload;
+      })
+      .addCase(fetchExperiencesByType.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
       .addCase(fetchExperiencesByCity.pending, (state) => {
         state.status = 'loading';
       })
@@ -168,6 +219,39 @@ const experienceSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
+      .addCase(fetchExperienceById.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchExperienceById.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.data = [action.payload];
+      })
+      .addCase(fetchExperienceById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(fetchExperiencesByLocation.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchExperiencesByLocation.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.data = action.payload;
+      })
+      .addCase(fetchExperiencesByLocation.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(fetchRelatedExperienceById.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchRelatedExperienceById.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.data = action.payload;
+      })
+      .addCase(fetchRelatedExperienceById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      });
   },
 });
 export const selectCoverURL = (state) => state.experiences.coverURL;

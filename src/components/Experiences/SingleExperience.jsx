@@ -9,7 +9,7 @@ export default function SingleExperience({ data }) {
 
   return (
     <Card ref={colRef}>
-      <Card.Img variant="top" src="img/img.jpg" />
+      <Card.Img variant="top" src={data.cover} />
       <Card.Body>
         <Card.Title>{data.name}</Card.Title>
         <Card.Text>

@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchExperiencesByCity } from '../reducers/experienceSlice'; 
 import { Col, Container, Row } from 'react-bootstrap';
-import SingleExperience from '../components/SingleExperience';
-import MainLayout from '../Layout/MainLayout';
+import SingleExperience from '../components/Experiences/SingleExperience';
+import Layout from '../Layout/Layout';
 
 export default function SearchResult() {
     const dispatch = useDispatch();
@@ -18,7 +18,7 @@ export default function SearchResult() {
     }, [dispatch, cityQuery]);
 
     return (
-        <MainLayout>
+        <Layout>
             <Container>
             {status === 'loading' ? (
                 <p>Loading...</p>
@@ -39,6 +39,6 @@ export default function SearchResult() {
                 </Row>
             )}
             </Container>
-        </MainLayout>
+        </Layout>
   )
 }

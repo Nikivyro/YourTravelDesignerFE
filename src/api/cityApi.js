@@ -12,6 +12,16 @@ export const fetchCities = async () => {
   }
 };
 
+export const fetchCity = async (cityName) => {
+  try {
+    const response = await axios.get(`${API_URL}/cities/${cityName}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching cities:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const addCity = async (cityData) => {
   try {
     const imageFormData = new FormData();

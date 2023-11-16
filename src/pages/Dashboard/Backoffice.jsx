@@ -1,19 +1,22 @@
 // BackOffice.js
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Nav, Tab } from 'react-bootstrap';
+import { Container, Row, Col, Nav, Tab, Button } from 'react-bootstrap';
 import CityTable from './citites/CityTable';
 import CityForm from './citites/CityForm';
 import CountryTable from './countries/CountryTable';
 import CountryForm from './countries/CountryForm';
 import ExperienceTable from './experiences/ExperienceTable';
-import ExperienceForm from './experiences/ExperienceForm';
 import { fetchCities } from '../../api/cityApi';
 import { fetchCountries } from '../../api/countryApi';
 import CreateExperienceForm from './experiences/CreateExperience';
+import EditExperienceForm from './experiences/EditExperienceForm';
+import { fetchExperiences, updateExperience } from '../../reducers/experienceSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function BackOffice() {
   const [cities, setCities] = useState([]);
   const [countries, setCountries] = useState([]);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     loadCities();
@@ -66,8 +69,12 @@ export default function BackOffice() {
     setCountries(updatedCountries);
   };
 
+  const handleToggleCreateForm = () => {
+    setShowCreateForm(!showCreateForm);
+  };
+
   return (
-    <Container>
+    <Container fluid>
       <Row>
         <Col xs={12}>
           <h1>BackOffice</h1>
@@ -101,10 +108,11 @@ export default function BackOffice() {
                     <CountryForm onCountryAdded={handleCountryAdded} />
                   </Tab.Pane>
                   <Tab.Pane eventKey="experiences">
-                    {/* <ExperienceTable/>
-                    <ExperienceForm cities={cities}/> */}
-                    <CreateExperienceForm cities={cities}/>
-
+                    <Button onClick={handleToggleCreateForm}>
+                      {showCreateForm ? 'Chiudi il form' : 'Crea una nuova esperienza'}
+                    </Button>
+                    <ExperienceTable cities={cities}/>
+                    {showCreateForm && <CreateExperienceForm cities={cities} />}
                   </Tab.Pane>
                 </Tab.Content>
               </Col>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchExperiencesByCategory } from '../reducers/experienceSlice';
+import { fetchExperiencesByCategory } from '../../reducers/experienceSlice';
 import SingleExperience from './SingleExperience';
-import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
+import { Col, Container, Row, Spinner, Tab, Tabs } from 'react-bootstrap';
 
 export default function AllExperiences() {
   const [selectedCategory, setSelectedCategory] = useState('Cultura');
@@ -34,16 +34,23 @@ export default function AllExperiences() {
 
       <Container className='my-5'>
         {status === 'loading' ? (
-          <p>Loading...</p>
+          <>
+              <Spinner animation="grow" />
+              <p>Caricamento in corso...</p>
+          </>
         ) : status === 'failed' ? (
-          <p>Error fetching experiences</p>
+          <p>Errore nella ricezione dati. Riprova più tardi</p>
         ) : (
           <Row>
-            {experiences.map((experience) => (
-              <Col xs={6} lg={4} key={experience._id}>
-                <SingleExperience data={experience} />
-              </Col>
-            ))}
+            {experiences.length === 0 ? (
+              <Col  xs={12} className="text-center"><p>Nessuna esperienza trovata per questa categoria.</p></Col>
+            ) : (
+              experiences.map((experience) => (
+                <Col xs={6} lg={3} key={experience._id} className='mb-4'>
+                  <SingleExperience data={experience} />
+                </Col>
+              ))
+            )}
           </Row>
         )}
       </Container>

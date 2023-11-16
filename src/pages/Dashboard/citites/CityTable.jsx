@@ -40,7 +40,7 @@ export default function CityTable ({ cities, onCityDeleted, onCityUpdated, count
         <tbody>
           {cities.map((city) => (
             <tr key={city._id}>
-              <td><img src={city.cover} className='img-fluid' alt={city.name}/></td>
+              <td><img src={city.cover} className='img-fluid' alt={city.name} width={200}/></td>
               <td>{city.name}</td>
               <td>{city.country.name}</td>
               <td>

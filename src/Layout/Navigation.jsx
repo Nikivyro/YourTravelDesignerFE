@@ -1,24 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { logoutUser } from '../reducers/authSlice';
 
 export default function Navigation() {
+  const dispatch = useDispatch()
   const [cityQuery, setCityQuery] = useState('');
   const navigate = useNavigate();
+  const user = useSelector(state => state.auth.user);
 
   const handleSearch = (e) => {
     e.preventDefault();
     navigate(`/search-results?city=${cityQuery}`);
   };
 
+  const handleLogout = () => {
+    dispatch(logoutUser())
+  }
+
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
-      <Container fluid>
+      <Container>
         <Navbar.Brand href="#"><Link to='/'>Logo</Link></Navbar.Brand>
         <Form onSubmit={handleSearch} className="d-flex">
           <Form.Control
@@ -35,17 +43,20 @@ export default function Navigation() {
         </Form>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
-          <Nav
-            className="ms-auto my-2 my-lg-0"
-          >
-            {/* <Nav.Link href="#action1">Home</Nav.Link> */}
-            <NavDropdown title="User" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="#action3">Profile</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">
-                Esci
-              </NavDropdown.Item>
-            </NavDropdown>
+          <Nav className="ms-auto my-2 my-lg-0">
+            {user ? (
+              <NavDropdown title={`Ciao, ${user.firstName}`} id="navbarScrollingDropdown">
+                <NavDropdown.Item href="/user/profile">
+                  Vai al profilo
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item onClick={handleLogout}>
+                  Esci
+                </NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+              <Link to="/user/login">Accedi</Link>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

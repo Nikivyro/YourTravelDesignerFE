@@ -1,13 +1,15 @@
 import React from 'react'
-import MainLayout from '../Layout/MainLayout'
-import AllExperiences from '../components/AllExperiences'
+import Layout from '../Layout/Layout'
+import AllExperiences from '../components/Experiences/AllExperiences'
 import Hero from '../components/Hero/Hero'
+import CitiesHome from '../components/Cities/CitiesHome'
 
 export default function Home() {
   return (
-    <MainLayout>
+    <Layout>
         <Hero></Hero>
         <AllExperiences/>
-    </MainLayout>
+        <CitiesHome/>       
+    </Layout>
   )
 }

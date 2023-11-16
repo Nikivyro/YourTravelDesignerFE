@@ -2,7 +2,7 @@ import React from 'react'
 import Navigation from './Navigation'
 import Footer from './Footer'
 
-export default function MainLayout({children}) {
+export default function Layout({children}) {
   return (
     <>
         <Navigation/>

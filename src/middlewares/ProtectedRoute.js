@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Login from '../pages/Login';
 
 function ProtectedRoute({ component: Component, ...rest }) {
-    const token = useSelector((state) => state.user.token);
-    const navigate = useNavigate();
+  const authState = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.auth.user);
+  const storedToken = localStorage.getItem('token');
+  const navigate = useNavigate();
   
-    if (!token) {
-      navigate('/login'); // Reindirizza l'utente alla pagina di login se non è autenticato
-      return null;
-    }
-  
-    return <Outlet />; // Renderizza i componenti figli
+
+  console.log('Auth dentro protected',authState);
+  console.log('user dentro protected',user);
+  // controllo del token nel localStorage
+  // Se inizialize rimanda a userPage
+  // Se loggato rimanda a userPage
+  // Se non loggato rimanda a login
+
+  if (user) {
+      return <Outlet />;
+  } else {
+      return <Login />;
+  }
+
 }
 
 export default ProtectedRoute;

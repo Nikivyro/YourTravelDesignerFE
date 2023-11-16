@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createExperience, uploadCover, selectCoverURL } from '../../../reducers/experienceSlice';
+import Button from 'react-bootstrap/Button';
+import { Form, Row, Col } from 'react-bootstrap';
 
 const CreateExperience = ({ cities }) => {
     const dispatch = useDispatch();
@@ -259,9 +261,7 @@ const CreateExperience = ({ cities }) => {
             [name]: parsedValue
           }
         });
-      };
-
-    console.log(formData);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -274,227 +274,235 @@ const CreateExperience = ({ cities }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>
-                Name:
-                <input type="text" name="name" value={formData.name} onChange={handleInputChange} />
-            </label>
+        <Form onSubmit={handleSubmit} className='my-5'>
+          <Form.Group className="mb-3" controlId="formBasicCityName">
+            <Form.Label className='fw-bold mb-2'>Nome Esperienza</Form.Label>
+            <Form.Control type="text" name="name" value={formData.name} onChange={handleInputChange}  required/>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicType">
+            <Form.Label className='fw-bold mb-2'>Paese</Form.Label>
+            <Form.Control as="select" name="type" value={formData.type} onChange={handleInputChange} required>
+                <option value="" disabled>Seleziona tipologia</option>
+                <option value="Tour">Tour</option>
+                <option value="Itinerario">Itinerario</option>
+                <option value="Pacchetto">Pacchetto</option>
+            </Form.Control>
+          </Form.Group>
 
-            <label>
-                Type:
-                <select name="type" value={formData.type} onChange={handleInputChange}>
-                    <option value="">Select Type</option>
-                    <option value="Tour">Tour</option>
-                    <option value="Itinerario">Itinerario</option>
-                    <option value="Pacchetto">Pacchetto</option>
-                </select>
-            </label>
-
-            <label>
-                Category:
-                <select name="category" value={formData.category} onChange={handleInputChange}>
-                    <option value="">Select Category</option>
+            <Row className="mb-3">
+                <Form.Group as={Col} controlId="formBasicCategory">
+                <Form.Label className='fw-bold mb-2'>Categoria</Form.Label>
+                <Form.Control as="select" name="category" value={formData.category} onChange={handleInputChange} required>
+                    <option value="" disabled>Seleziona categoria</option>
                     <option value="Cultura">Cultura</option>
                     <option value="Gastronomia">Gastronomia</option>
                     <option value="Natura">Natura</option>
                     <option value="Sport">Sport</option>
-                </select>
-            </label>
+                </Form.Control>
+                </Form.Group>
+            </Row>
 
-            <label>
-                Description:
-                <textarea name="description" value={formData.description} onChange={handleInputChange} />
-            </label>
+            <Row className="mb-3">
+                <Form.Group as={Col} controlId="formBasicDescription">
+                    <Form.Label className='fw-bold mb-2'>Descrizione</Form.Label>
+                    <Form.Control as="textarea" name="description" value={formData.description} onChange={handleInputChange} required/>
+                </Form.Group>
+            </Row>
 
-            <label>
-                Price:
-                <input type="number" name="price" value={formData.price} onChange={handleInputChange} />
-            </label>
+            <Row className="mb-3">
+                <Form.Group as={Col} controlId="formBasicPrice">
+                <Form.Label className='fw-bold mb-2'>Prezzo</Form.Label>
+                <Form.Control type="number" name="price" value={formData.price} onChange={handleInputChange} required/>
+                </Form.Group>
+            </Row>
 
-            <label>
-                Location:
-                <select name="location" value={formData.location.city} onChange={handleLocationChange}>
+            <Row className="mb-3">
+                <Form.Group as={Col} controlId="formBasicLocation">
+                <Form.Label className='fw-bold mb-2'>Città</Form.Label>
+                <Form.Control as="select" name="location" value={formData.location.city} onChange={handleLocationChange} required>
                     <option value="">Select Location</option>
                     {cities.map(city => (
-                        <option key={city._id} value={city._id}>
-                            {city.name}
-                        </option>
+                    <option key={city._id} value={city._id}>
+                        {city.name}
+                    </option>
                     ))}
-                </select>
-            </label>
+                </Form.Control>
+                </Form.Group>
+            </Row>
 
 
             {formData.itineraryStops.map((day, dayIndex) => (
-                <div key={dayIndex}>
-                    <label>
-                        Day:
-                        <input
-                            type="text"
-                            name="day"
-                            value={day.day}
-                            onChange={(e) => handleItineraryChange(e, dayIndex)}
-                        />
-                    </label>
-                    {day.stops.map((stop, stopIndex) => (
-                        <div key={stopIndex}>
-                            <label>
-                                Name:
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={stop.name}
-                                    onChange={(e) => handleItineraryChange(e, dayIndex, stopIndex)}
-                                />
-                            </label>
-                            <label>
-                                description:
-                                <input
-                                    type="text"
-                                    name="description"
-                                    value={stop.description}
-                                    onChange={(e) => handleItineraryChange(e, dayIndex, stopIndex)}
-                                />
-                            </label>
-                            <label>
-                                latitude:
-                                <input
-                                    type="text"
-                                    name="latitude"
-                                    value={stop.location.latitude}
-                                    onChange={(e) => handleItineraryChange(e, dayIndex, stopIndex, 'latitude')}
-                                />
-                            </label>
-                            <label>
-                                longitude:
-                                <input
-                                    type="text"
-                                    name="longitude"
-                                    value={stop.location.longitude}
-                                    onChange={(e) => handleItineraryChange(e, dayIndex, stopIndex, 'longitude')}
-                                />
-                            </label>
-                            <button type="button" onClick={() => handleRemoveStop(dayIndex, stopIndex)}>
-                                Rimuovi Stop
-                            </button>
-                        </div>
-                    ))}
-                    <button type="button" onClick={() => handleAddStop(dayIndex)}>Aggiungi Stop</button>
-                    <button type="button" onClick={() => handleRemoveDay(dayIndex)}>Rimuovi Giorno</button>
-                </div>
+            <Row key={dayIndex} className='border rounded-2 bg-light my-4'>
+                <Col xs={12} className='p-3'>
+                    <h3>Itinerario</h3>
+                    <p>Descrizione dell'Itinerario, specificare giorni e descrizione delle varie fermate dell'esperienza.</p>
+                </Col>
+                <Col md={4} className="mb-3 p-3">
+                    <Form.Group controlId={`formBasicNameDay-${dayIndex}`}>
+                        <Form.Label className='fw-bold mb-2'>Giorno</Form.Label>
+                        <Form.Control type="text" name="day" value={day.day} onChange={(e) => handleItineraryChange(e, dayIndex)} />
+                    </Form.Group>
+                </Col>
+                {day.stops.map((stop, stopIndex) => (
+                <Col xs={12} key={stopIndex}>
+                    <div className="content-stops border shadow p-3 m-3">
+                    <Form.Group controlId={`formBasicNameStop-${dayIndex}-${stopIndex}`}>
+                        <Form.Label className='fw-bold mb-2'>Fermata</Form.Label>
+                        <Form.Control type="text" name="name" value={stop.name} onChange={(e) => handleItineraryChange(e, dayIndex, stopIndex)} />
+                    </Form.Group>
+                    <Form.Group controlId={`formBasicDescriptionStop-${dayIndex}-${stopIndex}`}>
+                        <Form.Label className='fw-bold mb-2'>Descrizione</Form.Label>
+                        <Form.Control as="textarea" name="description" value={stop.description} onChange={(e) => handleItineraryChange(e, dayIndex, stopIndex)} />
+                    </Form.Group>
+                    <Form.Group controlId={`formBasicLatitudeStop-${dayIndex}-${stopIndex}`}>
+                        <Form.Label className='fw-bold mb-2'>Latitudine</Form.Label>
+                        <Form.Control type="text" name="latitude" value={stop.location.latitude} onChange={(e) => handleItineraryChange(e, dayIndex, stopIndex, 'latitude')} />
+                    </Form.Group>
+                    <Form.Group controlId={`formBasicLongitudeStop-${dayIndex}-${stopIndex}`}>
+                        <Form.Label className='fw-bold mb-2'>Longitudine</Form.Label>
+                        <Form.Control type="text" name="longitude" value={stop.location.longitude} onChange={(e) => handleItineraryChange(e, dayIndex, stopIndex, 'longitude')} />
+                    </Form.Group>
+                    <Button variant='danger' className='mt-3' type="button" onClick={() => handleRemoveStop(dayIndex, stopIndex)}>
+                        Rimuovi Stop
+                    </Button>
+                    </div>
+                </Col>
+                ))}
+                <Col md={4} className='ms-auto text-end my-3'>
+                <Button variant='success' className='me-2' type="button" onClick={() => handleAddStop(dayIndex)}>Aggiungi Stop</Button>
+                <Button variant='danger' type="button" onClick={() => handleRemoveDay(dayIndex)}>Rimuovi Giorno</Button>
+                </Col>
+            </Row>
             ))}
-            <button type="button" onClick={handleAddDay}>Aggiungi Giorno</button>
+            <Row className='text-end mt-3 mb-4'>
+            <Col>
+                <Button variant='primary' type="button" onClick={handleAddDay}>Aggiungi Giorno</Button>
+            </Col>
+            </Row>
 
-
+            <Row>
+                <Col xs={12}>
+                    <h3>Servizi inclusi</h3>
+                    <p>Specificare i servizi inclusi nell'esperienza</p>
+                </Col>
+            </Row>
             {formData.tourDetails.services.map((service, index) => (
-                <div key={index}>
-                    <label>
-                        Service:
-                        <input
+                <Row key={index}>
+                    <Form.Group as={Col} controlId={`formBasicService-${index}`}>
+                        <Form.Label className='fw-bold mb-2'>Servizio</Form.Label>
+                        <Form.Control
                             type="text"
                             value={service.service}
                             onChange={(e) => handleTourDetailChange(e, 'services', index)}
                         />
-                    </label>
-                    <label>
-                        Included:
-                        <input
+                    </Form.Group>
+
+                    <Form.Group as={Col} controlId={`formBasicIncluded-${index}`}>
+                        <Form.Check
                             type="checkbox"
+                            label="Incluso"
                             checked={service.included}
                             onChange={(e) => handleTourDetailChange(e, 'included', index)}
                         />
-                    </label>
-                    <button type="button" onClick={() => handleRemoveService(index)}>
-                        Remove Service
-                    </button>
-                </div>
+                    </Form.Group>
+                    <Col className='text-start me-auto'>
+                        <Button variant='danger' type="button" onClick={() => handleRemoveService(index)}>
+                            Rimuovi
+                        </Button>
+                    </Col>
+                </Row>
             ))}
-            <button type="button" onClick={handleAddService}>Add Service</button>
+            <Row className='text-start mb-5 mt-3'>
+                <Col>
+                    <Button variant='success' type="button" onClick={handleAddService}>Aggiungi servizio</Button>
+                </Col>    
+            </Row>
 
 
             {formData.tourDetails.meetingPoint.map((point, index) => (
-                <div key={index}>
-                    <label>
-                        Address:
-                        <input
+                <Row key={index}>
+                    <Form.Group as={Col} controlId={`formBasicMeetingPoint-${index}`}>
+                        <Form.Label className='fw-bold mb-2'>Indirizzo</Form.Label>
+                        <Form.Control
                             type="text"
                             name="address"
                             value={point.address}
                             onChange={(e) => handleMeetingPointChange(e, index)}
                         />
-                    </label>
-                    <label>
-                        Latitude:
-                        <input
+                    </Form.Group>
+                    <Form.Group as={Col} controlId={`formBasicMeetingPointLat-${index}`}>
+                        <Form.Label className='fw-bold mb-2'>Latitudine</Form.Label>
+                        <Form.Control
                             type="text"
                             name="latitude"
                             value={point.latitude}
                             onChange={(e) => handleMeetingPointChange(e, index)}
                         />
-                    </label>
-                    <label>
-                        Longitude:
-                        <input
+                    </Form.Group>
+                    <Form.Group as={Col} controlId={`formBasicMeetingPointLong-${index}`}>
+                        <Form.Label className='fw-bold mb-2'>Longitudine</Form.Label>
+                        <Form.Control
                             type="text"
                             name="longitude"
                             value={point.longitude}
                             onChange={(e) => handleMeetingPointChange(e, index)}
                         />
-                    </label>
+                    </Form.Group>
                     {index !== 0 && (
-                        <button type="button" onClick={() => handleRemoveMeetingPoint(index)}>
+                    <Col className='text-end align-self-center'>
+                        <Button variant='danger' type="button" onClick={() => handleRemoveMeetingPoint(index)}>
                             Rimuovi Luogo di Incontro
-                        </button>
+                        </Button>
+                    </Col>
                     )}
-                </div>
+                </Row>
             ))}
-            <button type="button" onClick={handleAddMeetingPoint}>Aggiungi Luogo di Incontro</button>
+            <Button type="button" onClick={handleAddMeetingPoint}>Aggiungi Luogo di Incontro</Button>
 
-            <label>
-                People:
-                <input
-                    type="number"
-                    name="people"
-                    value={formData.tourDetails.people}
-                    onChange={handleTourDetailsChange}
-                />
-            </label>
+            <Row className="mb-3">
+                <Form.Group as={Col} controlId="formBasicPeople">
+                <Form.Label className='fw-bold mb-2'>People</Form.Label>
+                <Form.Control type="number" name="people" value={formData.tourDetails.people} onChange={handleTourDetailsChange} />
+                </Form.Group>
+            </Row>
 
-            <label>
-                Duration:
-                <input
-                    type="text"
-                    name="duration"
-                    value={formData.tourDetails.duration}
-                    onChange={handleTourDetailsChange}
-                />
-            </label>
+            <Row className="mb-3">
+                <Form.Group as={Col} controlId="formBasicDuration">
+                <Form.Label className='fw-bold mb-2'>Duration</Form.Label>
+                <Form.Control type="text" name="duration" value={formData.tourDetails.duration} onChange={handleTourDetailsChange} />
+                </Form.Group>
+            </Row>
 
-            <label>
-                Languages:
-                <select name="languages" value={formData.tourDetails.languages} onChange={handleTourDetailsChange}>
-                    <option value="">Select Language</option>
+            <Row className="mb-3">
+                <Form.Group as={Col} controlId="formBasicLanguages">
+                <Form.Label className='fw-bold mb-2'>Languages</Form.Label>
+                <Form.Control as="select" name="languages" value={formData.tourDetails.languages} onChange={handleTourDetailsChange} required>
+                    <option value="" disabled>Select Language</option>
                     <option value="Italiano">Italiano</option>
                     <option value="Inglese">Inglese</option>
                     <option value="Spagnolo">Spagnolo</option>
                     <option value="Francese">Francese</option>
-                </select>
-            </label>
+                </Form.Control>
+                </Form.Group>
+            </Row>
 
-            <label>
-                Supplier:
-                <input
-                    type="text"
-                    name="supplier"
-                    value={formData.supplier}
-                    onChange={handleInputChange}
-                />
-            </label>
+            <Row className="mb-3">
+                <Form.Group as={Col} controlId="formBasicSupplier">
+                <Form.Label className='fw-bold mb-2'>Supplier</Form.Label>
+                <Form.Control type="text" name="supplier" value={formData.supplier} onChange={handleInputChange} required/>
+                </Form.Group>
+            </Row>
 
-            <input type="file" onChange={handleCoverChange} />
-            {coverURL && <img src={coverURL} alt="Cover Preview" />}
+            <Row className="mb-3">
+                <Form.Group as={Col} controlId="formBasicCover">
+                <Form.Label className='fw-bold mb-2'>Cover Image</Form.Label>
+                <Form.Control type="file" onChange={handleCoverChange} required/>
+                {coverURL && <img src={coverURL} alt="Cover Preview" />}
+                </Form.Group>
+            </Row>
 
-            <button type="submit">Crea Esperienza</button>
-        </form>
+            <Button type="submit">Crea Esperienza</Button>
+        </Form>
     );
 };
 
