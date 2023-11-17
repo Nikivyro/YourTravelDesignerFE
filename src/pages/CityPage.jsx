@@ -25,7 +25,7 @@ export default function CityPage() {
 
   return (
     <Layout>
-      <Container>
+      <Container className='py-5'>
         <Row>
           <Col xs={12}>
             <h1>{city.name} / {city.country?.name}</h1>

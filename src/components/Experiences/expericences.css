@@ -2,3 +2,21 @@
     object-fit: cover;
     aspect-ratio: 0.5/0.4;
 }
+.iconCategory{
+    width: 32px;
+    margin-right: 0.5rem;
+}
+.nav-tabs .nav-link {
+    border-radius: 0;
+}
+.nav-tabs .nav-link span {
+    color: #333333;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+.nav-tabs .nav-link.active{
+    background-color: (0 89 200 / 20%)
+}
+.nav-tabs .nav-link.active span{
+    color: #0059C8;
+}

@@ -14,8 +14,7 @@ import { jwtDecode } from 'jwt-decode';
 import { setUser } from './reducers/authSlice';
 import ProtectedRoute from './middlewares/ProtectedRoute';
 import { useDispatch } from 'react-redux';
-// import logo from './logo.svg';
-// import './App.css';
+import './App.css';
 
 function App() {
   const dispatch = useDispatch();

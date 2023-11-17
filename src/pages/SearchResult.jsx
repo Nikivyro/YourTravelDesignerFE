@@ -19,7 +19,7 @@ export default function SearchResult() {
 
     return (
         <Layout>
-            <Container>
+            <Container className='py-4'>
             {status === 'loading' ? (
                 <p>Loading...</p>
             ) : status === 'failed' ? (            
@@ -30,7 +30,7 @@ export default function SearchResult() {
                 </Row>
             ) : (
                 <Row>
-                <Col xs='12'><p>Risultati per <b>{cityQuery}</b></p></Col>
+                <Col xs='12'><p>Risultati per <span className='fw-bold'>{cityQuery}</span></p></Col>
                 {experiences.map((experience) => (
                     <Col xs={6} lg={4} key={experience._id}>
                         <SingleExperience data={experience} />

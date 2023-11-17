@@ -9,7 +9,7 @@ export default function Hero() {
             <Row>
                 <Col className='text-white'>
                     <h1>Your Travel Designer</h1>
-                    <h2>Claim del sito</h2>
+                    <h2>Le tue migliori esperienze, i tuoi miglori ricordi</h2>
                 </Col>
             </Row>
         </Container>
