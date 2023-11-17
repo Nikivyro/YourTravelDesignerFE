@@ -8,7 +8,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logoutUser } from '../reducers/authSlice';
-
+import logo from '../logo.svg';
 export default function Navigation() {
   const dispatch = useDispatch()
   const [cityQuery, setCityQuery] = useState('');
@@ -27,7 +27,7 @@ export default function Navigation() {
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
-        <Navbar.Brand href="#"><Link to='/'>Logo</Link></Navbar.Brand>
+        <Navbar.Brand href="#"><Link to='/'><img src={logo} alt="YourTravelDesigner" width={50}/></Link></Navbar.Brand>
         <Form onSubmit={handleSearch} className="d-flex">
           <Form.Control
             type="search"

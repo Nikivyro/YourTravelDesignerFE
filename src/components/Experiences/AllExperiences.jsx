@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchExperiencesByCategory } from '../../reducers/experienceSlice';
 import SingleExperience from './SingleExperience';
 import { Col, Container, Row, Spinner, Tab, Tabs } from 'react-bootstrap';
+import './expericences.css';
 
 export default function AllExperiences() {
   const [selectedCategory, setSelectedCategory] = useState('Cultura');

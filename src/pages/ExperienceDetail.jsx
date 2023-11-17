@@ -16,15 +16,19 @@ export default function ExperienceDetail() {
 
     useEffect(() => {
         dispatch(fetchExperienceById(experienceId));
-    }, [dispatch, experienceId]);
+      }, [dispatch, experienceId]);
+    
+    useEffect(() => {
+    // Imposta la categoria in localStorage quando il valore cambia
+    if (experience && experience.category) {
+        localStorage.setItem('selectedCategory', experience.category);
+    }
+    }, [experience]);
 
     return (
         <Layout>
             <Container>
                 <Row>
-                    <Col xs={12} className='py-3 text-start'>
-                        <Link to="/"><Button variant="primary"><i className="bi bi-house me-1"></i>Torna alla Home</Button></Link>
-                    </Col>
                     <Col xs={12}>
                         {status === 'loading' && (
                             <>
@@ -38,11 +42,13 @@ export default function ExperienceDetail() {
                         {status === 'succeeded' && experience && experience._id === experienceId && (
                             <>
                           <Row >
-                            <Col xs={12} className='mb-4'>
+                            <Col xs={12} className='mb-2'>
                                 <span>{experience.type} / {experience.category}</span>
                                 <h1>{experience.name} - {experience.location?.city?.name ?? "City Not Available"}</h1>
                                 <span>Fornitore: {experience.supplier.businessName}</span>
-                                <img src={experience.cover} className='img-fluid mt-4' alt={experience.name}/>
+                            </Col>
+                            <Col xs={12}>
+                                <img src={experience.cover} className='img-fluid my-4' alt={experience.name}/>
                             </Col>
                             <Col xs={12} className='mb-4'>
                                 <Card>
@@ -57,22 +63,42 @@ export default function ExperienceDetail() {
                                 <Card>
                                     <Card.Body>
                                         <h3>Dettagli sull'esperienza</h3>
-                                        <p>Duration: {experience.tourDetails.duration}</p>
-                                        <p>Languages: {experience.tourDetails.languages}</p>
-                                        <p>People: {experience.tourDetails.people}</p>
+                                        <p><i className="bi bi-clock-history"></i> {experience.tourDetails.duration}</p>
+                                        <p><i className="bi bi-translate"></i> {experience.tourDetails.languages}</p>
+                                        <p><i className="bi bi-people"></i> {experience.tourDetails.people} pax</p>
                                         
                                         <h3>Meeting Point:</h3>
-                                        <p>Address: {experience.tourDetails.meetingPoint[0].address}</p>
-                                        <p>Latitude: {experience.tourDetails.meetingPoint[0].latitude}</p>
-                                        <p>Longitude: {experience.tourDetails.meetingPoint[0].longitude}</p>
-                                    
+                                        <p>
+                                            {experience.tourDetails.meetingPoint && experience.tourDetails.meetingPoint.length > 0 && experience.tourDetails.meetingPoint[0].address && (
+                                                <>
+                                                    <i class="bi bi-geo-alt"></i> {experience.tourDetails.meetingPoint[0].address}
+                                                    {experience.tourDetails.meetingPoint[0].latitude && experience.tourDetails.meetingPoint[0].longitude && (
+                                                        <a
+                                                            href={`https://maps.google.com/?q=@${experience.tourDetails.meetingPoint[0].latitude},${experience.tourDetails.meetingPoint[0].longitude}`}
+                                                            className=''
+                                                            target='_blank'
+                                                            title='Indicazioni MeetingPoint'
+                                                        >
+                                                            Apri maps
+                                                        </a>
+                                                    )}
+                                                </>
+                                            )}
+                                            {(!experience.tourDetails.meetingPoint || experience.tourDetails.meetingPoint.length === 0 || !experience.tourDetails.meetingPoint[0].address) && (
+                                                <p>Posizione di incontro non disponibile.</p>
+                                            )}
+                                        </p>
+
+
                                         <h3>Servizi:</h3>
-                                        <ul>
-                                            {experience.tourDetails.services.map((service) => (
+                                        <ul className='list-unstyled'>
+                                        {experience.tourDetails.services.map((service) => (
                                             <li key={service._id}>
-                                                {service.service} - {service.included ? 'Included' : 'Not Included'}
+                                            <span className={service.included ? 'text-success' : 'text-danger'}>
+                                                {service.included ? <i className="bi bi-check2"></i> : <i className="bi bi-x"></i>} - {service.service} 
+                                            </span>
                                             </li>
-                                            ))}
+                                        ))}
                                         </ul>
                                     </Card.Body>
                                 </Card>
@@ -83,21 +109,36 @@ export default function ExperienceDetail() {
                                         <h3>Itinerario</h3>
                                         {experience.itineraryStops.map((stop) => (
                                             <div key={stop._id}>
-                                            <h4>{stop.day}</h4>
-                                            <ul>
-                                                {stop.stops.map((tourStop) => (
-                                                <li key={tourStop._id}>
-                                                    <p>Name: {tourStop.name}</p>
-                                                    <p>Description: {tourStop.description}</p>
-                                                    <p>Location: {tourStop.location.latitude}, {tourStop.location.longitude}</p>
-                                                </li>
-                                                ))}
-                                            </ul>
+                                                <h4>{stop.day}</h4>
+                                                <ul>
+                                                    {stop.stops.map((tourStop) => (
+                                                        <li key={tourStop._id}>
+                                                            <p>{tourStop.name}</p>
+                                                            <p>Descrizione: {tourStop.description}</p>
+                                                            {tourStop.location &&
+                                                                tourStop.location.latitude !== undefined &&
+                                                                tourStop.location.longitude !== undefined && (
+                                                                    <a
+                                                                        href={`https://maps.google.com/?q=@${tourStop.location.latitude},${tourStop.location.longitude}`}
+                                                                        className=''
+                                                                        target='_blank'
+                                                                        title='Indicazioni MeetingPoint'
+                                                                    >
+                                                                        Apri maps
+                                                                    </a>
+                                                                )}
+                                                            {(!tourStop.location ||
+                                                                tourStop.location.latitude === undefined ||
+                                                                tourStop.location.longitude === undefined) && <p></p>}
+                                                        </li>
+                                                    ))}
+                                                </ul>
                                             </div>
                                         ))}
                                     </Card.Body>
                                 </Card>
                             </Col>
+
                           </Row>
                           </>
                         )}  
@@ -105,7 +146,7 @@ export default function ExperienceDetail() {
                 </Row>
             </Container>
             <Container>
-                <ExperiencesByCategory experienceId={experienceId} categoryName={experience.category}/>
+                <ExperiencesByCategory/>
             {status === 'loading' && (
                 <>
                     <Spinner animation="grow" />
