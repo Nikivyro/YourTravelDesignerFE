@@ -320,7 +320,7 @@ const CreateExperience = ({ cities }) => {
                 <Form.Group as={Col} controlId="formBasicLocation">
                 <Form.Label className='fw-bold mb-2'>Città</Form.Label>
                 <Form.Control as="select" name="location" value={formData.location.city} onChange={handleLocationChange} required>
-                    <option value="">Select Location</option>
+                    <option value="" disabled>Seleziona Location</option>
                     {cities.map(city => (
                     <option key={city._id} value={city._id}>
                         {city.name}
@@ -375,9 +375,9 @@ const CreateExperience = ({ cities }) => {
             </Row>
             ))}
             <Row className='text-end mt-3 mb-4'>
-            <Col>
-                <Button variant='primary' type="button" onClick={handleAddDay}>Aggiungi Giorno</Button>
-            </Col>
+                <Col>
+                    <Button variant='primary' type="button" onClick={handleAddDay}>Aggiungi Giorno</Button>
+                </Col>
             </Row>
 
             <Row>
@@ -415,7 +415,7 @@ const CreateExperience = ({ cities }) => {
             <Row className='text-start mb-5 mt-3'>
                 <Col>
                     <Button variant='success' type="button" onClick={handleAddService}>Aggiungi servizio</Button>
-                </Col>    
+                </Col>
             </Row>
 
 

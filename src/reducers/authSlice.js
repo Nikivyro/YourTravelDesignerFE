@@ -40,6 +40,33 @@ export const initializeAuth = createAsyncThunk('auth/initializeAuth', async (_, 
   }
 });
 
+export const updateProfile = createAsyncThunk('auth/updateProfile', async (userData, { dispatch, getState }) => {
+  try {
+    dispatch(setLoading(true));
+
+    const { token } = getState().auth;
+
+    // Effettua una richiesta PATCH per aggiornare il profilo dell'utente
+    const response = await axios.patch(`${process.env.REACT_APP_URL_ENDPOINT}/user/profile/update`, userData, {
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    // Aggiorna le informazioni dell'utente nello stato di Redux
+    dispatch(setUser(response.data.result));
+
+    // Restituisci le nuove informazioni dell'utente per l'aggiornamento
+    return response.data.result;
+  } catch (error) {
+    console.error('Errore durante l\'aggiornamento del profilo dell\'utente:', error);
+    throw error;
+  } finally {
+    dispatch(setLoading(false));
+  }
+});
+
+
 export const logoutUser = () => (dispatch) => {
   localStorage.removeItem('token');
   dispatch(clearAuth());
@@ -67,6 +94,19 @@ const authSlice = createSlice({
       state.isLoading = action.payload;
     },
     logoutUser: logoutUser,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(initializeAuth.fulfilled, (state, action) => {
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.isAuthenticated = !!action.payload.token;
+        state.isLoading = false;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isLoading = false;
+      });
   },
 });
 

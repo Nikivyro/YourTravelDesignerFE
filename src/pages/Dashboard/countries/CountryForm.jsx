@@ -1,6 +1,6 @@
 // CountryForm.js
 import React, { useState, useEffect } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Card } from 'react-bootstrap';
 import { addCountry, updateCountry } from '../../../api/countryApi';
 
 export default function CountryForm({ countryToEdit, onCountryAdded, onCountryUpdated }) {
@@ -43,7 +43,8 @@ export default function CountryForm({ countryToEdit, onCountryAdded, onCountryUp
   };
 
   return (
-    <>
+    <Card className='mb-4'>
+      <Card.Body>
       <Form onSubmit={handleSubmitCountry}>
         <Form.Group className="mb-3" controlId="formBasicCountryName">
           <Form.Label>Nome Paese</Form.Label>
@@ -54,6 +55,7 @@ export default function CountryForm({ countryToEdit, onCountryAdded, onCountryUp
           {countryToEdit ? 'Modifica Paese' : 'Aggiungi Paese'}
         </Button>
       </Form>
-    </>
+      </Card.Body>
+    </Card>
   );
 }

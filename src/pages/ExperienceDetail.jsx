@@ -27,7 +27,7 @@ export default function ExperienceDetail() {
 
     return (
         <Layout>
-            <Container>
+            <Container className='py-4'>
                 <Row>
                     <Col xs={12}>
                         {status === 'loading' && (
@@ -63,15 +63,15 @@ export default function ExperienceDetail() {
                                 <Card>
                                     <Card.Body>
                                         <h3>Dettagli sull'esperienza</h3>
-                                        <p><i className="bi bi-clock-history"></i> {experience.tourDetails.duration}</p>
-                                        <p><i className="bi bi-translate"></i> {experience.tourDetails.languages}</p>
-                                        <p><i className="bi bi-people"></i> {experience.tourDetails.people} pax</p>
+                                        <p><i className="bi bi-clock-history me-1"></i> {experience.tourDetails.duration}</p>
+                                        <p><i className="bi bi-translate me-1"></i> {experience.tourDetails.languages}</p>
+                                        <p><i className="bi bi-people me-1"></i> {experience.tourDetails.people} pax</p>
                                         
                                         <h3>Meeting Point:</h3>
                                         <p>
                                             {experience.tourDetails.meetingPoint && experience.tourDetails.meetingPoint.length > 0 && experience.tourDetails.meetingPoint[0].address && (
                                                 <>
-                                                    <i class="bi bi-geo-alt"></i> {experience.tourDetails.meetingPoint[0].address}
+                                                    <i className="bi bi-geo-alt me-1"></i> {experience.tourDetails.meetingPoint[0].address} - 
                                                     {experience.tourDetails.meetingPoint[0].latitude && experience.tourDetails.meetingPoint[0].longitude && (
                                                         <a
                                                             href={`https://maps.google.com/?q=@${experience.tourDetails.meetingPoint[0].latitude},${experience.tourDetails.meetingPoint[0].longitude}`}

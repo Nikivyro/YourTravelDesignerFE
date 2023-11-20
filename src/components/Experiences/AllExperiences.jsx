@@ -36,7 +36,7 @@ export default function AllExperiences() {
         id="uncontrolled-tab-example"
         activeKey={selectedCategory}
         onSelect={(category) => handleTabChange(category)}
-        className="mb-3 justify-content-center align-items-center"
+        className="mb-3 justify-content-center align-items-center selectCategory"
       >
         {Object.keys(categoryIcons).map((category) => (
           <Tab eventKey={category} title={<><img src={categoryIcons[category]} alt={category} className="iconCategory" /><span>{category}</span></> } key={category}></Tab>

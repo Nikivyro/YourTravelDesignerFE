@@ -129,6 +129,15 @@ export const fetchRelatedExperienceById = createAsyncThunk('experiences/fetchRel
   }
 });
 
+export const fetchExperienceByUser = createAsyncThunk('experiences/fetchExperienceByUser', async ({ userId }) => {
+  try {
+    const response = await axios.get(`${process.env.REACT_APP_URL_ENDPOINT}/experiences/user/${userId}`);
+    return response.data.experiences;
+  } catch (error) {
+    throw error;
+  }
+});
+
 
 
 const experienceSlice = createSlice({
@@ -242,6 +251,17 @@ const experienceSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(fetchRelatedExperienceById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(fetchExperienceByUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchExperienceByUser.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.data = action.payload;
+      })
+      .addCase(fetchExperienceByUser.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       });

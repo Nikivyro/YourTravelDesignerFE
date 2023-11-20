@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchExperiencesByCategory } from '../../reducers/experienceSlice';
+import SingleExperience from './SingleExperience';
+import { Col, Row } from 'react-bootstrap';
 
 export default function ExperiencesByCategory() {
   const dispatch = useDispatch();
@@ -21,14 +23,14 @@ export default function ExperiencesByCategory() {
   console.log('Dentro category', categoryExperiences);
 
   return (
-    <div>
+    <Row className='py-4'>
       <h2>Esperienze per categoria</h2>
       {categoryExperiences.map((exp) => (
-        <div key={exp._id}>
-          <h3>{exp.name}</h3>
-          {/* Aggiungi il resto delle informazioni che desideri visualizzare */}
-        </div>
+        <Col key={exp._id} xs={12} md={6} lg={4}>
+          {/* <h3>{exp.name}</h3> */}
+          <SingleExperience data={exp}/>
+        </Col>
       ))}
-    </div>
+    </Row>
   );
 }

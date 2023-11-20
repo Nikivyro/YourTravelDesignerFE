@@ -15,6 +15,7 @@ import { setUser } from './reducers/authSlice';
 import ProtectedRoute from './middlewares/ProtectedRoute';
 import { useDispatch } from 'react-redux';
 import './App.css';
+import ExperiencesType from './pages/Dashboard/experiences/ExperiencesType';
 
 function App() {
   const dispatch = useDispatch();
@@ -39,6 +40,7 @@ function App() {
           <Route path='/user/login' element={<Login/>}/>
           <Route path='/user/register' element={<Register/>}/>
           <Route path="/experiences/:experienceId" element={<ExperienceDetail />} />
+          <Route path="/experiences/type/:typeName" element={<ExperiencesType />} />
           <Route path="/city/:cityName" element={<CityPage />} />
           <Route path="/search-results" element={<SearchResult />} />
           <Route element={<ProtectedRoute/>}>

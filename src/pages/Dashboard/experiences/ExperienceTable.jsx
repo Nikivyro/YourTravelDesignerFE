@@ -7,17 +7,13 @@ import { fetchExperiences, updateExperience, deleteExperience } from '../../../r
 import EditExperienceForm from './EditExperienceForm';
 import { Link } from 'react-router-dom';
 
-const ExperienceTable = ({cities}) => {
+const ExperienceTable = ({experiences, cities}) => {
   const dispatch = useDispatch();
-  const experiences = useSelector((state) => state.experiences.data);
+  // const experiences = useSelector((state) => state.experiences.data);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [experienceToDelete, setExperienceToDelete] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedExperience, setSelectedExperience] = useState(null);
-
-  useEffect(() => {
-    dispatch(fetchExperiences());
-  }, [dispatch]);
 
   const handleExperienceUpdate = (experience) => {
     setSelectedExperience(experience);
@@ -47,12 +43,16 @@ const ExperienceTable = ({cities}) => {
     setSelectedExperience(null);
   };
 
+  const handleSaveExperience = () => {
+    setShowEditModal(false);
+  };
+
   return (
     <>
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Cover</th>
             <th>Titolo</th>
             <th>Descrizione</th>
             <th>Azioni</th>
@@ -69,13 +69,13 @@ const ExperienceTable = ({cities}) => {
                   variant="primary"
                   onClick={() => handleExperienceUpdate(experience)}
                 >
-                  Modifica
+                  <i className="bi bi-pencil me-1"></i> Modifica
                 </Button>
-                <Button variant="danger" onClick={() => handleExperienceDelete(experience._id)}>
-                  Elimina
+                <Button variant="danger" onClick={() => handleExperienceDelete(experience._id)} className='my-2'>
+                  <i className="bi bi-trash me-1"></i> Elimina
                 </Button>
                 <Link to={`/experiences/${experience._id}`} className='text-white text-decoration-none'>
-                  <Button variant="warning">Guarda<i className="bi bi-eye ms-1"></i></Button>
+                  <Button variant="warning"><i className="bi bi-eye me-1"></i> Guarda</Button>
                 </Link>
               </td>
             </tr>
@@ -106,11 +106,9 @@ const ExperienceTable = ({cities}) => {
             <Modal.Title>Modifica Esperienza</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {/* Passa i dati dell'esperienza al componente EditExperience */}
-            <EditExperienceForm experienceData={selectedExperience} cities={cities} />
+            <EditExperienceForm experienceData={selectedExperience} cities={cities}  onSave={handleSaveExperience}/>
           </Modal.Body>
           <Modal.Footer>
-            {/* ... Il tuo footer del modal rimane invariato ... */}
           </Modal.Footer>
         </Modal>
       )}

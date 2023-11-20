@@ -11,7 +11,7 @@ export default function SingleExperience({ data }) {
     <Card ref={colRef}>
       <Card.Img variant="top" src={data.cover} />
       <Card.Body>
-        <Card.Title className='fw-bold'>{data.name}</Card.Title>
+        <Card.Title className='fw-bold h6'>{data.name}</Card.Title>
         <Card.Text>
           <ul className='list-unstyled'>
             <li>

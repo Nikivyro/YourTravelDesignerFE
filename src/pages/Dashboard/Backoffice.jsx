@@ -12,15 +12,19 @@ import CreateExperienceForm from './experiences/CreateExperience';
 import EditExperienceForm from './experiences/EditExperienceForm';
 import { fetchExperiences, updateExperience } from '../../reducers/experienceSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import Layout from '../../Layout/Layout';
 
 export default function BackOffice() {
+  const dispatch = useDispatch();
   const [cities, setCities] = useState([]);
   const [countries, setCountries] = useState([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const experiences = useSelector((state) => state.experiences.data);
 
   useEffect(() => {
     loadCities();
     loadCountries();
+    dispatch(fetchExperiences());
   }, []);
 
   const loadCities = async () => {
@@ -74,52 +78,54 @@ export default function BackOffice() {
   };
 
   return (
-    <Container fluid>
-      <Row>
-        <Col xs={12}>
-          <h1>BackOffice</h1>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={12}>
-          <Tab.Container id="backoffice-tabs" defaultActiveKey="cities">
-            <Row>
-              <Col xs={3}>
-                <Nav variant="pills" className="flex-column">
-                  <Nav.Item>
-                    <Nav.Link eventKey="cities">Città</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link eventKey="countries">Paesi</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link eventKey="experiences">Experiences</Nav.Link>
-                  </Nav.Item>
-                </Nav>
-              </Col>
-              <Col xs={9}>
-                <Tab.Content>
-                  <Tab.Pane eventKey="cities">
-                    <CityTable cities={cities} onCityDeleted={handleCityDeleted} onCityUpdated={handleCityUpdated} countries={countries} />
-                    <CityForm onCityAdded={handleCityAdded} countries={countries} />
-                  </Tab.Pane>
-                  <Tab.Pane eventKey="countries">
-                    <CountryTable countries={countries} onCountryDeleted={handleCountryDeleted} onCountryUpdated={handleCountryUpdated} />
-                    <CountryForm onCountryAdded={handleCountryAdded} />
-                  </Tab.Pane>
-                  <Tab.Pane eventKey="experiences">
-                    <Button onClick={handleToggleCreateForm}>
-                      {showCreateForm ? 'Chiudi il form' : 'Crea una nuova esperienza'}
-                    </Button>
-                    <ExperienceTable cities={cities}/>
-                    {showCreateForm && <CreateExperienceForm cities={cities} />}
-                  </Tab.Pane>
-                </Tab.Content>
-              </Col>
-            </Row>
-          </Tab.Container>
-        </Col>
-      </Row>
-    </Container>
+    <Layout>
+      <Container fluid className='py-5'>
+        <Row>
+          <Col xs={12}>
+            <h1>BackOffice</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12}>
+            <Tab.Container id="backoffice-tabs" defaultActiveKey="cities">
+              <Row>
+                <Col xs={3}>
+                  <Nav variant="pills" className="flex-column">
+                    <Nav.Item>
+                      <Nav.Link eventKey="cities">Città</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="countries">Paesi</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="experiences">Experiences</Nav.Link>
+                    </Nav.Item>
+                  </Nav>
+                </Col>
+                <Col xs={9}>
+                  <Tab.Content>
+                    <Tab.Pane eventKey="cities">
+                      <CityForm onCityAdded={handleCityAdded} countries={countries} />
+                      <CityTable cities={cities} onCityDeleted={handleCityDeleted} onCityUpdated={handleCityUpdated} countries={countries} />
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="countries">
+                      <CountryForm onCountryAdded={handleCountryAdded} />
+                      <CountryTable countries={countries} onCountryDeleted={handleCountryDeleted} onCountryUpdated={handleCountryUpdated} />
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="experiences">
+                      <Button onClick={handleToggleCreateForm} className='mb-4'>
+                        {showCreateForm ? 'Chiudi il form' : 'Crea una nuova esperienza'}
+                      </Button>
+                      {showCreateForm && <CreateExperienceForm cities={cities} />}
+                      <ExperienceTable experiences={experiences} cities={cities}/>
+                    </Tab.Pane>
+                  </Tab.Content>
+                </Col>
+              </Row>
+            </Tab.Container>
+          </Col>
+        </Row>
+      </Container>
+    </Layout>
   );
 }
