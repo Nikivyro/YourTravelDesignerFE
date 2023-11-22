@@ -10,13 +10,13 @@ export default function ExperiencesByCategory() {
 
   useEffect(() => {
     const storedCategory = localStorage.getItem('selectedCategory');
-    
+  
     const fetchData = async () => {
-      if (storedCategory) {
+      if (categoryExperiences) {
         await dispatch(fetchExperiencesByCategory(storedCategory));
       }
     };
-
+  
     fetchData();
   }, [dispatch]);
 

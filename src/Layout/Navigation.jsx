@@ -16,6 +16,7 @@ export default function Navigation() {
   const [cityQuery, setCityQuery] = useState('');
   const navigate = useNavigate();
   const user = useSelector(state => state.auth.user);
+  const [selectedType, setSelectedType] = useState('');
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -25,6 +26,11 @@ export default function Navigation() {
   const handleLogout = () => {
     dispatch(logoutUser())
   }
+
+  const handleTypeClick = (type) => {
+    setSelectedType(type);
+    navigate(`/experiences/type/${type}`);
+  };
 
   return (
     <Navbar expand="lg" className="navbar-dark bg-blue sticky-top">
@@ -47,6 +53,9 @@ export default function Navigation() {
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav className="ms-auto my-2 my-lg-0 text-white">
+            <Nav.Link onClick={() => handleTypeClick('Tour')}>Tour</Nav.Link>
+            <Nav.Link onClick={() => handleTypeClick('Pacchetto')}>Pacchetti</Nav.Link>
+            <Nav.Link onClick={() => handleTypeClick('Itinerario')}>Itinerari</Nav.Link>
             {user ? (
               <NavDropdown title={`Ciao, ${user.firstName}`} id="navbarScrollingDropdown">
                 <NavDropdown.Item href="/user/profile">

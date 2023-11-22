@@ -40,7 +40,7 @@ function App() {
           <Route path='/user/login' element={<Login/>}/>
           <Route path='/user/register' element={<Register/>}/>
           <Route path="/experiences/:experienceId" element={<ExperienceDetail />} />
-          <Route path="/experiences/type/:typeName" element={<ExperiencesType />} />
+          <Route path="/experiences/type/:type" element={<ExperiencesType />} />
           <Route path="/city/:cityName" element={<CityPage />} />
           <Route path="/search-results" element={<SearchResult />} />
           <Route element={<ProtectedRoute/>}>

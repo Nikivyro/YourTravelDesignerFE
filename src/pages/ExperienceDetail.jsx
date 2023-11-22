@@ -4,8 +4,6 @@ import { Link, useParams } from 'react-router-dom';
 import Layout from '../Layout/Layout';
 import { fetchExperienceById } from '../reducers/experienceSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import ExperiencesByCategory from '../components/Experiences/ExperiencesByCategory';
-import ExperienceByCity from '../components/Experiences/ExperienceByCity';
 
 export default function ExperienceDetail() {
     const { experienceId } = useParams();
@@ -48,7 +46,22 @@ export default function ExperienceDetail() {
                                 <span>Fornitore: {experience.supplier.businessName}</span>
                             </Col>
                             <Col xs={12}>
-                                <img src={experience.cover} className='img-fluid my-4' alt={experience.name}/>
+                                <Row>
+                                    <Col xs={12} lg={8} className='mb-4 mb-lg-0'>
+                                        <img src={experience.cover} className='img-fluid my-4 w-100' alt={experience.name}/>
+                                    </Col>
+                                    <Col xs={12} lg={4} className='align-self-center'>
+                                        <Card>
+                                            <Card.Body>
+                                                <Card.Title className='fw-bold h3 border-bottom pb-2'>Contatta il fornitore</Card.Title>
+                                                <ul className='list-unstyled'>
+                                                    <li className='my-3'><a href={`tel:${experience.supplier.phone}`} className='text-dark text-decoration-none'><i className="bi bi-phone me-1"></i>+ {experience.supplier.phone}</a></li>
+                                                    <li><a href={`mailto:${experience.supplier.email}`} className='text-dark text-decoration-none'><i className="bi bi-envelope me-1"></i> {experience.supplier.email}</a></li>
+                                                </ul>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                </Row>
                             </Col>
                             <Col xs={12} className='mb-4'>
                                 <Card>
@@ -144,24 +157,6 @@ export default function ExperienceDetail() {
                         )}  
                     </Col>
                 </Row>
-            </Container>
-            <Container>
-                <ExperiencesByCategory/>
-            {status === 'loading' && (
-                <>
-                    <Spinner animation="grow" />
-                    <p>Caricamento in corso...</p>
-                </>
-            )}
-            {status === 'failed' && (
-                <p>Si è verificato un errore: {error}</p>
-            )}
-            {status === 'succeeded' && experience && (
-                <>
-                {/* Resto del codice per la renderizzazione di ExperienceDetail */}
-                {/* <ExperienceByCity cityName={experience.location.city.name}/> */}
-                </>
-            )}
             </Container>
         </Layout>
     );
