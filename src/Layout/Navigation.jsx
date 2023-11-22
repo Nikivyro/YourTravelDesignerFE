@@ -67,7 +67,7 @@ export default function Navigation() {
                 </NavDropdown.Item>
               </NavDropdown>
             ) : (
-              <Link to="/user/login" className='text-white text-decoration-none'><i className="bi bi-person"></i>Accedi</Link>
+              <Link to="/user/login" className='nav-link text-white text-decoration-none'><i className="bi bi-person"></i>Accedi</Link>
             )}
           </Nav>
         </Navbar.Collapse>
